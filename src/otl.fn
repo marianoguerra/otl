@@ -1,0 +1,5 @@
+
+fn main @public case Args:
+    io.format("Args: ~p~n", [Args])
+    erlang.halt(0)
+end
