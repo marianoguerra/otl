@@ -48,12 +48,23 @@ fn to_lex @public case Path:
     with_file_content(Path, fn str_to_lex:1)
 end
 
+fn to_ast @public case Path:
+    with_file_content(Path, fn str_to_ast:1)
+end
+
 fn str_to_lex @public case String:
     match otl_lexer.string(String):
         case ok, Tokens, Endline: (ok, Tokens, Endline)
         case eof, Endline: (error, (Endline, otl_lexer, (eof, Endline)))
         case error, Error: (error, Error)
         case error, Error, _: (error, Error)
+    end
+end
+
+fn str_to_ast @public case Str:
+    match str_to_lex(Str):
+        case  ok, Tokens, _NewLine: otl_parser.parse(Tokens)
+        case Other: Other
     end
 end
 
@@ -96,6 +107,8 @@ fn main @public
         print(beam_to_file(Code, OutDirPath, ModuleName))
     case ["lex", Path]:
         print(to_lex(Path))
+    case ["ast", Path]:
+        print(to_ast(Path))
     case Args:
         io.format("Usage:~n otl erl2ast file.erl~n")
         io.format(" otl erl2ast2erl file.erl~n")
