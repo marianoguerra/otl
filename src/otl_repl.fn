@@ -1,0 +1,67 @@
+
+fn start @public case:
+ spawn(fn main:0)
+end
+
+fn loop case Bindings:
+  match io.get_line(">>> "):
+      case eof:
+          io.format("~nBye!~n")
+      case Input:
+          match handle_input(Input, Bindings):
+              case ok, NewBindings:
+                  loop(NewBindings)
+          end
+  end
+end
+
+fn handle_input case Input, Bindings:
+    match string.strip(string.strip(Input, both, #c "\n")):
+        case "": (ok, Bindings)
+        case _Other:
+            match otl.str_to_ast(Input):
+                case ok, Ast:
+                    try
+                        match erl_eval.exprs(Ast, Bindings):
+                            case value, Value, B1:
+                                print(Value)
+                                (ok, B1)
+                            case Other1:
+                                io.format("error: ~p~n", [Other1])
+                                (ok, Bindings)
+                        end
+                    catch case T, E:
+                        io.format("~p: ~p~n~n", [T, E])
+                        pprint_strace(erlang.get_stacktrace())
+                        (ok, Bindings)
+                    end
+                case Other2:
+                    print(Other2)
+                    (ok, Bindings)
+            end
+    end
+end
+
+fn main case:
+    io.format("otl shell (Ctrl+g and then q to quit, Ctrl+g for Job Control Mode)~n~n")
+    Bindings = erl_eval.new_bindings()
+    loop(Bindings)
+end
+
+fn print
+    case (error, Reason):
+        io.format("error: ~p~n", [Reason])
+    case Data:
+        io.format("~p~n", [Data])
+end
+
+fn pprint_strace case Strace:
+    Lines = lists.map(Strace) <- case (ModName, FunName, Arity, Props):
+          File = proplists.get_value(file, Props, "?")
+          Line = proplists.get_value(line, Props, 0)
+          Args = [ModName, FunName, Arity, File, Line]
+          io_lib.format("~p.~p:~p ~s:~p", Args)
+    end
+    Trace = string.join(Lines, "\n")
+    io.format("~s~n", [Trace])
+end
