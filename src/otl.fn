@@ -70,6 +70,12 @@ fn to_beam @public case Path, OutDir, ModuleName, FunctionName:
     end
 end
 
+fn eval_path @public case Path:
+    (ok, Ast) = to_ast(Path)
+    Bindings = erl_eval.new_bindings()
+    erl_eval.exprs(Ast, Bindings)
+end
+
 fn ast_to_mod case Ast, Path, ModuleName, FunctionName:
     FName = list_to_atom(FunctionName)
     Mod = [(attribute, 1, file, (Path, 1)),
@@ -142,6 +148,9 @@ fn main @public
         print(to_beam(Path, OutDirPath, ModuleName, FunctionName))
     case ["erl", Path, ModuleName, FunctionName]:
         print(ast_to_erl(to_mod(Path, ModuleName, FunctionName)))
+    case ["eval", Path]:
+        (value, Value, _Bindings) = eval_path(Path)
+        print(Value)
     case _Args:
         io.format("Usage:~n otl erl2ast file.erl~n")
         io.format(" otl erl2ast2erl file.erl~n")
