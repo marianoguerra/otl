@@ -1,8 +1,8 @@
 
 Definitions.
 
-Number = 1
-Bool = true
+Number = [0-9]
+Bool = (true|false)
 
 Endls       = (\s|\t)*(\r?\n)
 Whites      = \s+
