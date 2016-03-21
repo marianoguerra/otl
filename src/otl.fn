@@ -1,5 +1,16 @@
 
-fn main @public case Args:
-    io.format("Args: ~p~n", [Args])
-    erlang.halt(0)
+fn from_erl @public case Path:
+    epp.parse_file(Path, [], [])
+end
+
+fn print case Data:
+    io.format("~p~n", [Data])
+end
+
+fn main @public
+    case ["erl2ast", Path]:
+        print(from_erl(Path))
+    case Args:
+        io.format("Usage: otl erl2ast file.erl~n")
+        erlang.halt(0)
 end
