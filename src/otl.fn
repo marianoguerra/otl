@@ -30,6 +30,33 @@ fn beam_to_file @public case Code, DestPath, ModuleName:
     end
 end
 
+fn read_file case Path:
+    match file.read_file(Path):
+        case ok, Content: (ok, unicode.characters_to_list(Content, utf8))
+        case Other: Other
+    end
+end
+
+fn with_file_content case Path, Fn:
+    match read_file(Path):
+        case ok, Content: Fn(Content)
+        case Other: Other
+    end
+end
+
+fn to_lex @public case Path:
+    with_file_content(Path, fn str_to_lex:1)
+end
+
+fn str_to_lex @public case String:
+    match otl_lexer.string(String):
+        case ok, Tokens, Endline: (ok, Tokens, Endline)
+        case eof, Endline: (error, (Endline, otl_lexer, (eof, Endline)))
+        case error, Error: (error, Error)
+        case error, Error, _: (error, Error)
+    end
+end
+
 fn bin_to_file case Bin, Path:
     to_file(Bin, Path, [binary, write])
 end
@@ -67,6 +94,8 @@ fn main @public
         end
 
         print(beam_to_file(Code, OutDirPath, ModuleName))
+    case ["lex", Path]:
+        print(to_lex(Path))
     case Args:
         io.format("Usage:~n otl erl2ast file.erl~n")
         io.format(" otl erl2ast2erl file.erl~n")
