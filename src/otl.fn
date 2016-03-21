@@ -7,6 +7,43 @@ fn ast_to_erl @public case (ok, Ast):
     erl_prettypr.format(erl_syntax.form_list(Ast))
 end
 
+fn ast_to_beam @public case Ast, Opts:
+    match compile.forms(Ast, [return, strong_validation :: Opts]):
+        case (error, _Errors, _Warnings)=Error: Error
+        case error: (error, [(error, compile_forms_error)], [])
+        else:
+            match compile.forms(Ast, Opts):
+                case ok, ModuleName, Code: (ok, ModuleName, Code, [])
+                case (ok, _ModuleName, _Code, _Warnings)=Res: Res
+                case (error, _Errors, _Warnings)=Error: Error
+                case error: (error, [(error, compile_forms_error)], [])
+            end
+    end
+end
+
+fn beam_to_file @public case Code, DestPath, ModuleName:
+    BeamName = atom_to_list(ModuleName) ++ ".beam"
+    BeamPath = filename.join(DestPath, BeamName)
+    match bin_to_file(Code, BeamPath):
+        case error: (error, [(file_write_error, BeamPath)], [])
+        case ok: (ok, [(module_name, ModuleName), (path, BeamPath)])
+    end
+end
+
+fn bin_to_file case Bin, Path:
+    to_file(Bin, Path, [binary, write])
+end
+
+fn to_file case Data, Path, Mode:
+    match file.open(Path, Mode):
+        case ok, Device:
+            file.write(Device, Data)
+            file.close(Device)
+            ok
+        case Error: Error
+    end
+end
+
 fn print case Data:
     try
         io.format("~s~n", [Data])
@@ -20,7 +57,19 @@ fn main @public
         print(from_erl(Path))
     case ["erl2ast2erl", Path]:
         print(ast_to_erl(from_erl(Path)))
+    case ["erl2beam", Path, OutDirPath]:
+        (ok, Ast) = from_erl(Path)
+        Opts = []
+        (ok, ModuleName, Code, Warnings) = ast_to_beam(Ast, Opts)
+
+        for Warning in Warnings:
+            print(Warning)
+        end
+
+        print(beam_to_file(Code, OutDirPath, ModuleName))
     case Args:
-        io.format("Usage: otl erl2ast file.erl~n")
+        io.format("Usage:~n otl erl2ast file.erl~n")
+        io.format(" otl erl2ast2erl file.erl~n")
+        io.format(" otl erl2beam file.erl outdir~n")
         erlang.halt(0)
 end
