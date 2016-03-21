@@ -140,6 +140,8 @@ fn main @public
         print(to_mod(Path, ModuleName, FunctionName))
     case ["beam", Path, OutDirPath, ModuleName, FunctionName]:
         print(to_beam(Path, OutDirPath, ModuleName, FunctionName))
+    case ["erl", Path, ModuleName, FunctionName]:
+        print(ast_to_erl(to_mod(Path, ModuleName, FunctionName)))
     case _Args:
         io.format("Usage:~n otl erl2ast file.erl~n")
         io.format(" otl erl2ast2erl file.erl~n")
