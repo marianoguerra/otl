@@ -60,12 +60,22 @@ fn to_mod @public case Path, ModuleName, FunctionName:
     end
 end
 
+fn to_beam @public case Path, OutDir, ModuleName, FunctionName:
+    match to_mod(Path, ModuleName, FunctionName):
+        case ok, ModAst:
+            Opts = []
+            (ok, ModuleNameAtom, Code, _Warnings) = ast_to_beam(ModAst, Opts)
+            beam_to_file(Code, OutDir, ModuleNameAtom)
+        case Other: Other
+    end
+end
+
 fn ast_to_mod case Ast, Path, ModuleName, FunctionName:
     FName = list_to_atom(FunctionName)
     Mod = [(attribute, 1, file, (Path, 1)),
         (attribute, 1, module, list_to_atom(ModuleName)),
         (attribute, 2, export, [(FName, 0)]),
-        (function, 3, FName, 0, [(clause, 4, [], []), Ast])]
+        (function, 3, FName, 0, [(clause, 4, [], [], Ast)])]
     (ok, Mod)
 end
 
@@ -128,7 +138,9 @@ fn main @public
         print(to_ast(Path))
     case ["mod", Path, ModuleName, FunctionName]:
         print(to_mod(Path, ModuleName, FunctionName))
-    case Args:
+    case ["beam", Path, OutDirPath, ModuleName, FunctionName]:
+        print(to_beam(Path, OutDirPath, ModuleName, FunctionName))
+    case _Args:
         io.format("Usage:~n otl erl2ast file.erl~n")
         io.format(" otl erl2ast2erl file.erl~n")
         io.format(" otl erl2beam file.erl outdir~n")
