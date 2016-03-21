@@ -3,13 +3,23 @@ fn from_erl @public case Path:
     epp.parse_file(Path, [], [])
 end
 
+fn ast_to_erl @public case (ok, Ast):
+    erl_prettypr.format(erl_syntax.form_list(Ast))
+end
+
 fn print case Data:
-    io.format("~p~n", [Data])
+    try
+        io.format("~s~n", [Data])
+    catch case _, _:
+        io.format("~p~n", [Data])
+    end
 end
 
 fn main @public
     case ["erl2ast", Path]:
         print(from_erl(Path))
+    case ["erl2ast2erl", Path]:
+        print(ast_to_erl(from_erl(Path)))
     case Args:
         io.format("Usage: otl erl2ast file.erl~n")
         erlang.halt(0)
