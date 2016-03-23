@@ -2,6 +2,7 @@
 Nonterminals
     program tl_exprs tl_expr
     add mul
+    unary
     literal.
 
 Terminals
@@ -24,8 +25,11 @@ tl_expr -> add : '$1'.
 add -> add add_op mul : {op, line('$2'), unwrap('$2'), '$1', '$3'}.
 add -> mul : '$1'.
 
-mul -> mul mul_op literal : {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
-mul -> literal : '$1'.
+mul -> mul mul_op unary : {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
+mul -> unary : '$1'.
+
+unary -> add_op literal : {op, line('$1'), unwrap('$1'), '$2'}.
+unary -> literal : '$1'.
 
 literal -> boolean : {atom, line('$1'), unwrap('$1')}.
 literal -> integer: '$1'.
