@@ -3,11 +3,13 @@ Nonterminals
     program tl_exprs tl_expr
     add mul
     unary
+    match
     literal.
 
 Terminals
     add_op mul_op
     float integer boolean
+    assign var
     nl.
 
 Rootsymbol
@@ -20,7 +22,10 @@ tl_exprs -> tl_expr : ['$1'].
 tl_exprs -> tl_expr nl: ['$1'].
 tl_exprs -> tl_expr nl tl_exprs : ['$1'|'$3'].
 
-tl_expr -> add : '$1'.
+tl_expr -> match : '$1'.
+
+match -> add assign add : {match, line('$1'), '$1', '$3'}.
+match -> add : '$1'.
 
 add -> add add_op mul : {op, line('$2'), unwrap('$2'), '$1', '$3'}.
 add -> mul : '$1'.
@@ -34,6 +39,7 @@ unary -> literal : '$1'.
 literal -> boolean : {atom, line('$1'), unwrap('$1')}.
 literal -> integer: '$1'.
 literal -> float: '$1'.
+literal -> var : '$1'.
 
 Erlang code.
 

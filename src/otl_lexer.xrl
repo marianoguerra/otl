@@ -12,6 +12,10 @@ Tabs        = \t+
 Add         = (\+|-)
 Mul         = (\*|//|/|%)
 
+Assign      = =
+
+Identifier  = [A-Z\_][a-zA-Z0-9\_]*
+
 Rules.
 
 {Bool} : make_token(boolean, TokenLine, TokenChars).
@@ -20,6 +24,10 @@ Rules.
 
 {Add} : make_token(add_op, TokenLine, TokenChars).
 {Mul} : make_token(mul_op, TokenLine, TokenChars).
+
+{Assign} : make_token(assign, TokenLine, TokenChars).
+
+{Identifier} : make_token(var, TokenLine, TokenChars).
 
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).
