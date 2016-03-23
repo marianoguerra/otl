@@ -3,7 +3,7 @@ Nonterminals
     program tl_exprs tl_expr.
 
 Terminals
-    integer boolean.
+    float integer boolean.
 
 Rootsymbol
     program.
@@ -15,6 +15,7 @@ tl_exprs -> tl_expr tl_exprs : ['$1'|'$2'].
 
 tl_expr -> boolean : {atom, line('$1'), unwrap('$1')}.
 tl_expr -> integer: '$1'.
+tl_expr -> float: '$1'.
 
 Erlang code.
 
