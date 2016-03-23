@@ -10,6 +10,7 @@ Whites      = \s+
 Tabs        = \t+
 
 Add         = (\+|-)
+Mul         = (\*|//|/|%)
 
 Rules.
 
@@ -18,6 +19,7 @@ Rules.
 {Float}   : make_token(float,   TokenLine, TokenChars, fun erlang:list_to_float/1).
 
 {Add} : make_token(add_op, TokenLine, TokenChars).
+{Mul} : make_token(mul_op, TokenLine, TokenChars).
 
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).
