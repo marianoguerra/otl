@@ -16,7 +16,8 @@ Rules.
 {Float}   : make_token(float,   TokenLine, TokenChars, fun erlang:list_to_float/1).
 
 % spaces, tabs and new lines
-{Endls}                 : skip_token.
+{Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).
+
 {Whites}                : skip_token.
 {Tabs}                  : skip_token.
 
@@ -29,3 +30,6 @@ make_token(Name, Line, Chars) ->
 
 make_token(Name, Line, Chars, Fun) ->
     {token, {Name, Line, Fun(Chars)}}.
+
+endls(Chars) ->
+    lists:filter(fun (C) -> C == $\n end, Chars).
