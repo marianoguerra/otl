@@ -12,6 +12,8 @@ Tabs        = \t+
 Add         = (\+|-)
 Mul         = (\*|//|/|%)
 
+Comp        = (<|<=|==|is|>=|>|!=|isnt)
+
 Assign      = =
 
 Identifier  = [A-Z\_][a-zA-Z0-9\_]*
@@ -26,6 +28,8 @@ Rules.
 {Mul} : make_token(mul_op, TokenLine, TokenChars).
 
 {Assign} : make_token(assign, TokenLine, TokenChars).
+
+{Comp} : make_token(comp_op, TokenLine, TokenChars).
 
 {Identifier} : make_token(var, TokenLine, TokenChars).
 
