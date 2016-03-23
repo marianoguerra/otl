@@ -4,12 +4,15 @@ Nonterminals
     add mul
     unary
     comp
+    bool_or_op
+    bool_and_op
     match
     literal.
 
 Terminals
     add_op mul_op
     comp_op
+    bool_and bool_or
     float integer boolean
     assign var
     nl.
@@ -26,8 +29,16 @@ tl_exprs -> tl_expr nl tl_exprs : ['$1'|'$3'].
 
 tl_expr -> match : '$1'.
 
-match -> comp assign comp : {match, line('$1'), '$1', '$3'}.
-match -> comp : '$1'.
+match -> bool_or_op assign bool_or_op : {match, line('$1'), '$1', '$3'}.
+match -> bool_or_op : '$1'.
+
+bool_or_op -> bool_and_op bool_or bool_or_op :
+    {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
+bool_or_op -> bool_and_op : '$1'.
+
+bool_and_op -> comp bool_and bool_and_op :
+    {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
+bool_and_op -> comp : '$1'.
 
 comp -> add comp_op comp : {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
 comp -> add : '$1'.

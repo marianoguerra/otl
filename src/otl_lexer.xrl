@@ -14,6 +14,9 @@ Mul         = (\*|//|/|%)
 
 Comp        = (<|<=|==|is|>=|>|!=|isnt)
 
+BoolAnd     = and
+BoolOr      = or
+
 Assign      = =
 
 Identifier  = [A-Z\_][a-zA-Z0-9\_]*
@@ -30,6 +33,9 @@ Rules.
 {Assign} : make_token(assign, TokenLine, TokenChars).
 
 {Comp} : make_token(comp_op, TokenLine, TokenChars).
+
+{BoolAnd}                : make_token(bool_and, TokenLine, TokenChars).
+{BoolOr}                 : make_token(bool_or,  TokenLine, TokenChars).
 
 {Identifier} : make_token(var, TokenLine, TokenChars).
 
