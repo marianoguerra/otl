@@ -20,6 +20,7 @@ BoolOr      = or
 Assign      = =
 
 Identifier  = [A-Z\_][a-zA-Z0-9\_]*
+Atom        = [a-z][a-zA-Z0-9\_@]*
 
 Rules.
 
@@ -38,6 +39,7 @@ Rules.
 {BoolOr}                 : make_token(bool_or,  TokenLine, TokenChars).
 
 {Identifier} : make_token(var, TokenLine, TokenChars).
+{Atom} : make_token(atom, TokenLine, TokenChars, fun erlang:list_to_atom/1).
 
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).

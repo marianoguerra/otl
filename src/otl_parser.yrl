@@ -15,6 +15,7 @@ Terminals
     bool_and bool_or
     float integer boolean
     assign var
+    atom
     nl.
 
 Rootsymbol
@@ -56,6 +57,7 @@ literal -> boolean : {atom, line('$1'), unwrap('$1')}.
 literal -> integer: '$1'.
 literal -> float: '$1'.
 literal -> var : '$1'.
+literal -> atom : '$1'.
 
 Erlang code.
 
