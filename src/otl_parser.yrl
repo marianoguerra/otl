@@ -1,9 +1,13 @@
 
 Nonterminals
-    program tl_exprs tl_expr.
+    program tl_exprs tl_expr
+    add
+    literal.
 
 Terminals
-    float integer boolean nl.
+    add_op
+    float integer boolean
+    nl.
 
 Rootsymbol
     program.
@@ -15,9 +19,14 @@ tl_exprs -> tl_expr : ['$1'].
 tl_exprs -> tl_expr nl: ['$1'].
 tl_exprs -> tl_expr nl tl_exprs : ['$1'|'$3'].
 
-tl_expr -> boolean : {atom, line('$1'), unwrap('$1')}.
-tl_expr -> integer: '$1'.
-tl_expr -> float: '$1'.
+tl_expr -> add : '$1'.
+
+add -> add add_op literal : {op, line('$2'), unwrap('$2'), '$1', '$3'}.
+add -> literal : '$1'.
+
+literal -> boolean : {atom, line('$1'), unwrap('$1')}.
+literal -> integer: '$1'.
+literal -> float: '$1'.
 
 Erlang code.
 
