@@ -17,6 +17,8 @@ Comp        = (<|<=|==|is|>=|>|!=|isnt)
 BoolAnd     = and
 BoolOr      = or
 
+BoolNot     = not
+
 Assign      = =
 
 Identifier  = [A-Z\_][a-zA-Z0-9\_]*
@@ -40,6 +42,8 @@ Rules.
 
 {BoolAnd}                : make_token(bool_and, TokenLine, TokenChars).
 {BoolOr}                 : make_token(bool_or,  TokenLine, TokenChars).
+
+{BoolNot}                : make_token(bool_not, TokenLine, TokenChars).
 
 {Identifier} : make_token(var, TokenLine, TokenChars).
 {Atom} : make_token(atom, TokenLine, TokenChars, fun erlang:list_to_atom/1).

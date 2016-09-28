@@ -13,6 +13,7 @@ Terminals
     add_op mul_op
     comp_op
     bool_and bool_or
+    bool_not
     float integer boolean
     assign var
     atom
@@ -52,6 +53,7 @@ mul -> mul mul_op unary : {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
 mul -> unary : '$1'.
 
 unary -> add_op literal : {op, line('$1'), unwrap('$1'), '$2'}.
+unary -> bool_not literal : {op, line('$1'), unwrap('$1'), '$2'}.
 unary -> literal : '$1'.
 
 literal -> boolean : {atom, line('$1'), unwrap('$1')}.
