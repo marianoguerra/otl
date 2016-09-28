@@ -9,7 +9,7 @@ Nonterminals
     bool_and_op
     match
     literal
-    list
+    list tuple
     list_items.
 
 Terminals
@@ -79,6 +79,7 @@ literal -> var : '$1'.
 literal -> atom : '$1'.
 literal -> open bool_or_op close : '$2'.
 literal -> list : '$1'.
+literal -> tuple : '$1'.
 
 list -> open_list close_list : {nil, line('$1')}.
 list -> open_list list_items close_list : '$2'.
@@ -87,6 +88,8 @@ list_items -> literal : {cons, line('$1'), '$1', {nil, line('$1')}}.
 list_items -> literal sep : {cons, line('$1'), '$1', {nil, line('$1')}}.
 list_items -> literal sep list_items : {cons, line('$1'), '$1', '$3'}.
 list_items -> literal cons_op literal : {cons, line('$1'), '$1', '$3'}.
+
+tuple -> open close : {tuple, line('$1'), []}.
 
 Erlang code.
 
