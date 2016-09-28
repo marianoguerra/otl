@@ -34,6 +34,8 @@ ConsOp      = ::
 Sep         = ,
 Concat      = (\+\+|--)
 
+String      = "(\\\^.|\\.|[^\"])*"
+
 Rules.
 
 {Bool} : make_token(boolean, TokenLine, TokenChars).
@@ -66,6 +68,7 @@ Rules.
 
 {Concat}                 : make_token(concat_op, TokenLine, TokenChars).
 
+{String}                 : build_string(string, TokenChars, TokenLine, TokenLen).
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).
 
@@ -84,3 +87,36 @@ make_token(Name, Line, Chars, Fun) ->
 
 endls(Chars) ->
     lists:filter(fun (C) -> C == $\n end, Chars).
+
+build_string(Type, Chars, Line, Len) ->
+  String = unescape_string(lists:sublist(Chars, 2, Len - 2), Line),
+    {token, {Type, Line, String}}.
+
+unescape_string(String, Line) -> unescape_string(String, Line, []).
+
+unescape_string([], _Line, Output) ->
+  lists:reverse(Output);
+unescape_string([$\\, Escaped | Rest], Line, Output) ->
+  Char = map_escaped_char(Escaped, Line),
+  unescape_string(Rest, Line, [Char|Output]);
+unescape_string([Char|Rest], Line, Output) ->
+  unescape_string(Rest, Line, [Char|Output]).
+
+map_escaped_char(Escaped, Line) ->
+  case Escaped of
+    $\\ -> $\\;
+    $/ -> $/;
+    $\" -> $\";
+    $\' -> $\';
+    $\( -> $(;
+    $b -> $\b;
+    $d -> $\d;
+    $e -> $\e;
+    $f -> $\f;
+    $n -> $\n;
+    $r -> $\r;
+    $s -> $\s;
+    $t -> $\t;
+    $v -> $\v;
+    _ -> throw({error, {Line, fn_lexer, ["unrecognized escape sequence: ", [$\\, Escaped]]}})
+  end.
