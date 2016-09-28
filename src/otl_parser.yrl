@@ -7,7 +7,8 @@ Nonterminals
     bool_or_op
     bool_and_op
     match
-    literal.
+    literal
+    list.
 
 Terminals
     add_op mul_op
@@ -18,6 +19,7 @@ Terminals
     assign var
     atom
     open close
+    open_list close_list
     nl.
 
 Rootsymbol
@@ -62,6 +64,9 @@ literal -> float: '$1'.
 literal -> var : '$1'.
 literal -> atom : '$1'.
 literal -> open bool_or_op close : '$2'.
+literal -> list : '$1'.
+
+list -> open_list close_list : {nil, line('$1')}.
 
 Erlang code.
 

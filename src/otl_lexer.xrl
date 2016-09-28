@@ -27,6 +27,9 @@ Atom        = [a-z][a-zA-Z0-9\_@]*
 Open        = \(
 Close       = \)
 
+OpenList    = \[
+CloseList   = \]
+
 Rules.
 
 {Bool} : make_token(boolean, TokenLine, TokenChars).
@@ -50,6 +53,9 @@ Rules.
 
 {Open} : make_token(open, TokenLine, TokenChars).
 {Close} : make_token(close, TokenLine, TokenChars).
+
+{OpenList}               : make_token(open_list,   TokenLine, TokenChars).
+{CloseList}              : make_token(close_list,  TokenLine, TokenChars).
 
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).
