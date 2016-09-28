@@ -22,6 +22,9 @@ Assign      = =
 Identifier  = [A-Z\_][a-zA-Z0-9\_]*
 Atom        = [a-z][a-zA-Z0-9\_@]*
 
+Open        = \(
+Close       = \)
+
 Rules.
 
 {Bool} : make_token(boolean, TokenLine, TokenChars).
@@ -40,6 +43,9 @@ Rules.
 
 {Identifier} : make_token(var, TokenLine, TokenChars).
 {Atom} : make_token(atom, TokenLine, TokenChars, fun erlang:list_to_atom/1).
+
+{Open} : make_token(open, TokenLine, TokenChars).
+{Close} : make_token(close, TokenLine, TokenChars).
 
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).

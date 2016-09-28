@@ -16,6 +16,7 @@ Terminals
     float integer boolean
     assign var
     atom
+    open close
     nl.
 
 Rootsymbol
@@ -58,6 +59,7 @@ literal -> integer: '$1'.
 literal -> float: '$1'.
 literal -> var : '$1'.
 literal -> atom : '$1'.
+literal -> open bool_or_op close : '$2'.
 
 Erlang code.
 
