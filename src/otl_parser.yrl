@@ -10,7 +10,7 @@ Nonterminals
     match
     literal
     list tuple
-    list_items.
+    list_items seq_items.
 
 Terminals
     add_op mul_op
@@ -91,6 +91,11 @@ list_items -> literal cons_op literal : {cons, line('$1'), '$1', '$3'}.
 
 tuple -> open close : {tuple, line('$1'), []}.
 tuple -> open literal sep close : {tuple, line('$1'), ['$2']}.
+tuple -> open literal sep seq_items close : {tuple, line('$1'), ['$2'|'$4']}.
+
+seq_items -> literal : ['$1'].
+seq_items -> literal sep : ['$1'].
+seq_items -> literal sep seq_items : ['$1'|'$3'].
 
 Erlang code.
 
