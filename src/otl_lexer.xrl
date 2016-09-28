@@ -37,6 +37,7 @@ ConsOp      = ::
 Sep         = ,
 Dot         = \.
 Colon       = :
+Hash        = #
 Concat      = (\+\+|--)
 
 String      = "(\\\^.|\\.|[^\"])*"
@@ -77,6 +78,7 @@ Rules.
 {Sep}                    : make_token(sep,     TokenLine, TokenChars).
 {Dot}                    : make_token(dot,     TokenLine, TokenChars).
 {Colon}                  : make_token(colon,   TokenLine, TokenChars).
+{Hash}                   : make_token(hash,    TokenLine, TokenChars).
 
 {Concat}                 : make_token(concat_op, TokenLine, TokenChars).
 
