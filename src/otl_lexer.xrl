@@ -32,6 +32,7 @@ CloseList   = \]
 
 ConsOp      = ::
 Sep         = ,
+Dot         = \.
 Concat      = (\+\+|--)
 
 String      = "(\\\^.|\\.|[^\"])*"
@@ -67,6 +68,7 @@ Rules.
 
 {ConsOp}                 : make_token(cons_op, TokenLine, TokenChars).
 {Sep}                    : make_token(sep,     TokenLine, TokenChars).
+{Dot}                    : make_token(dot,     TokenLine, TokenChars).
 
 {Concat}                 : make_token(concat_op, TokenLine, TokenChars).
 

@@ -26,6 +26,7 @@ Terminals
     cons_op
     sep
     concat_op
+    dot
     nl.
 
 Rootsymbol
@@ -101,6 +102,11 @@ seq_items -> literal sep seq_items : ['$1'|'$3'].
 
 fn_call -> atom open literal close : {call, line('$1'), '$1', ['$3']}.
 fn_call -> atom tuple : {call, line('$1'), '$1', unwrap('$2')}.
+
+fn_call -> atom dot atom open literal close :
+    {call, line('$1'), {remote, line('$1'), '$1', '$3'}, ['$5']}.
+fn_call -> atom dot atom tuple :
+    {call, line('$1'), {remote, line('$1'), '$1', '$3'}, unwrap('$4')}.
 
 Erlang code.
 
