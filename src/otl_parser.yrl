@@ -97,6 +97,7 @@ map -> open_map close_map : {map, line('$1'), []}.
 map -> open_map map_items close_map : {map, line('$1'), '$2'}.
 
 map_item -> literal colon literal : {map_field_assoc, line('$1'), '$1', '$3'}.
+map_item -> literal assign literal : {map_field_exact, line('$1'), '$1', '$3'}.
 
 map_items -> map_item : ['$1'].
 map_items -> map_item sep : ['$1'].
