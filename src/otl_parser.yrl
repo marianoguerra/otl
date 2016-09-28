@@ -73,6 +73,7 @@ list -> open_list close_list : {nil, line('$1')}.
 list -> open_list list_items close_list : '$2'.
 
 list_items -> literal : {cons, line('$1'), '$1', {nil, line('$1')}}.
+list_items -> literal sep : {cons, line('$1'), '$1', {nil, line('$1')}}.
 list_items -> literal sep list_items : {cons, line('$1'), '$1', '$3'}.
 list_items -> literal cons_op literal : {cons, line('$1'), '$1', '$3'}.
 
