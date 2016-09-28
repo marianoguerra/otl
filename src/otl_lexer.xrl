@@ -63,7 +63,7 @@ Rules.
 {BoolNot}                : make_token(bool_not, TokenLine, TokenChars).
 
 {Identifier} : make_token(var, TokenLine, TokenChars).
-{Atom} : make_token(atom, TokenLine, TokenChars, fun erlang:list_to_atom/1).
+{Atom}                   : {token, atom_or_identifier(TokenChars, TokenLine)}.
 
 {Open} : make_token(open, TokenLine, TokenChars).
 {Close} : make_token(close, TokenLine, TokenChars).
@@ -142,3 +142,16 @@ map_escaped_char(Escaped, Line) ->
     $v -> $\v;
     _ -> throw({error, {Line, fn_lexer, ["unrecognized escape sequence: ", [$\\, Escaped]]}})
   end.
+
+atom_or_identifier(String, TokenLine) ->
+     case is_reserved(String) of
+         true ->
+            {list_to_atom(String), TokenLine};
+         false ->
+            {atom, TokenLine, build_atom(String, TokenLine)}
+     end.
+
+build_atom(Atom, _Line) -> list_to_atom(Atom).
+
+is_reserved("when")    -> true;
+is_reserved(_)         -> false.

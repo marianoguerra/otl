@@ -12,6 +12,8 @@ Nonterminals
     list tuple map
     list_items seq_items map_item map_items
     map_update
+    e_when
+    body
     fn_call.
 
 Terminals
@@ -31,6 +33,7 @@ Terminals
     dot
     colon
     hash
+    when
     nl.
 
 Rootsymbol
@@ -43,6 +46,7 @@ tl_exprs -> tl_expr : ['$1'].
 tl_exprs -> tl_expr nl: ['$1'].
 tl_exprs -> tl_expr nl tl_exprs : ['$1'|'$3'].
 
+tl_expr -> e_when : '$1'.
 tl_expr -> match : '$1'.
 
 match -> bool_or_op assign bool_or_op : {match, line('$1'), '$1', '$3'}.
@@ -125,6 +129,12 @@ fn_call -> atom dot atom open literal close :
     {call, line('$1'), {remote, line('$1'), '$1', '$3'}, ['$5']}.
 fn_call -> atom dot atom tuple :
     {call, line('$1'), {remote, line('$1'), '$1', '$3'}, unwrap('$4')}.
+
+e_when -> when bool_or_op body :
+    Line = line('$1'),
+    {'if', Line, [{clause, Line, [], [['$2']], '$3'}]}.
+
+body -> open_map tl_exprs close_map : '$2'.
 
 Erlang code.
 
