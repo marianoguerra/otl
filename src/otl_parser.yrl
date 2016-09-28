@@ -8,7 +8,7 @@ Nonterminals
     bool_and_op
     match
     literal
-    list cons_list
+    list
     list_items.
 
 Terminals
@@ -68,16 +68,13 @@ literal -> var : '$1'.
 literal -> atom : '$1'.
 literal -> open bool_or_op close : '$2'.
 literal -> list : '$1'.
-literal -> cons_list : '$1'.
 
 list -> open_list close_list : {nil, line('$1')}.
 list -> open_list list_items close_list : '$2'.
 
 list_items -> literal : {cons, line('$1'), '$1', {nil, line('$1')}}.
 list_items -> literal sep list_items : {cons, line('$1'), '$1', '$3'}.
-
-cons_list -> open_list literal cons_op literal close_list :
-    {cons, line('$1'), '$2', '$4'}.
+list_items -> literal cons_op literal : {cons, line('$1'), '$1', '$3'}.
 
 Erlang code.
 
