@@ -36,6 +36,7 @@ Concat      = (\+\+|--)
 
 String      = "(\\\^.|\\.|[^\"])*"
 BString     = '(\\\^.|\\.|[^\'])*'
+AtomString  = `(\\\^.|\\.|[^\`])*`
 
 Rules.
 
@@ -71,6 +72,9 @@ Rules.
 
 {String}                 : build_string(string, TokenChars, TokenLine, TokenLen).
 {BString}                : build_string(bstring, TokenChars, TokenLine, TokenLen).
+
+{AtomString}             : build_atom_string(TokenChars, TokenLine, TokenLen).
+
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).
 
@@ -89,6 +93,10 @@ make_token(Name, Line, Chars, Fun) ->
 
 endls(Chars) ->
     lists:filter(fun (C) -> C == $\n end, Chars).
+
+build_atom_string(Chars, Line, Len) ->
+  String = unescape_string(lists:sublist(Chars, 2, Len - 2), Line),
+  {token, {atom, Line, list_to_atom(String)}}.
 
 build_string(Type, Chars, Line, Len) ->
   String = unescape_string(lists:sublist(Chars, 2, Len - 2), Line),
