@@ -10,7 +10,7 @@ Nonterminals
     match
     literal
     list tuple map
-    list_items seq_items map_item
+    list_items seq_items map_item map_items
     fn_call.
 
 Terminals
@@ -91,9 +91,13 @@ list -> open_list close_list : {nil, line('$1')}.
 list -> open_list list_items close_list : '$2'.
 
 map -> open_map close_map : {map, line('$1'), []}.
-map -> open_map map_item close_map : {map, line('$1'), ['$2']}.
+map -> open_map map_items close_map : {map, line('$1'), '$2'}.
 
 map_item -> literal colon literal : {map_field_assoc, line('$1'), '$1', '$3'}.
+
+map_items -> map_item : ['$1'].
+map_items -> map_item sep : ['$1'].
+map_items -> map_item sep map_items: ['$1'|'$3'].
 
 list_items -> literal : {cons, line('$1'), '$1', {nil, line('$1')}}.
 list_items -> literal sep : {cons, line('$1'), '$1', {nil, line('$1')}}.
