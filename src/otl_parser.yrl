@@ -2,6 +2,7 @@
 Nonterminals
     program tl_exprs tl_expr
     add mul
+    concat
     unary
     comp
     bool_or_op
@@ -23,6 +24,7 @@ Terminals
     open_list close_list
     cons_op
     sep
+    concat_op
     nl.
 
 Rootsymbol
@@ -48,8 +50,12 @@ bool_and_op -> comp bool_and bool_and_op :
     {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
 bool_and_op -> comp : '$1'.
 
-comp -> add comp_op comp : {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
-comp -> add : '$1'.
+comp -> concat  comp_op comp : {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
+comp -> concat : '$1'.
+
+concat -> add concat_op concat :
+    {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
+concat -> add : '$1'.
 
 add -> add add_op mul : {op, line('$2'), unwrap('$2'), '$1', '$3'}.
 add -> mul : '$1'.
