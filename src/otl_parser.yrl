@@ -67,6 +67,7 @@ literal -> open bool_or_op close : '$2'.
 literal -> list : '$1'.
 
 list -> open_list close_list : {nil, line('$1')}.
+list -> open_list literal close_list : {cons, line('$1'), '$2', {nil, line('$3')}}.
 
 Erlang code.
 
