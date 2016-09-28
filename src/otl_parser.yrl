@@ -17,7 +17,7 @@ Terminals
     comp_op
     bool_and bool_or
     bool_not
-    float integer boolean string
+    float integer boolean string bstring
     assign var
     atom
     open close
@@ -71,6 +71,10 @@ literal -> boolean : {atom, line('$1'), unwrap('$1')}.
 literal -> integer: '$1'.
 literal -> float: '$1'.
 literal -> string : '$1'.
+literal -> bstring :
+    Line = line('$1'),
+    {bin, Line, [{bin_element, Line, {string, Line, unwrap('$1')},
+                     default, default}]}.
 literal -> var : '$1'.
 literal -> atom : '$1'.
 literal -> open bool_or_op close : '$2'.

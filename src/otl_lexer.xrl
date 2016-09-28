@@ -35,6 +35,7 @@ Sep         = ,
 Concat      = (\+\+|--)
 
 String      = "(\\\^.|\\.|[^\"])*"
+BString     = '(\\\^.|\\.|[^\'])*'
 
 Rules.
 
@@ -69,6 +70,7 @@ Rules.
 {Concat}                 : make_token(concat_op, TokenLine, TokenChars).
 
 {String}                 : build_string(string, TokenChars, TokenLine, TokenLen).
+{BString}                : build_string(bstring, TokenChars, TokenLine, TokenLen).
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).
 
