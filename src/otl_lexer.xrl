@@ -155,4 +155,6 @@ build_atom(Atom, _Line) -> list_to_atom(Atom).
 
 is_reserved("when")    -> true;
 is_reserved("else")    -> true;
+is_reserved("match")    -> true;
+is_reserved("end")    -> true;
 is_reserved(_)         -> false.

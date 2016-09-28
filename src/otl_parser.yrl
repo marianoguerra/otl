@@ -7,12 +7,13 @@ Nonterminals
     comp
     bool_or_op
     bool_and_op
-    match
+    e_match
     literal
     list tuple map
     list_items seq_items map_item map_items
     map_update
     e_when e_when_clause e_when_elses
+    e_case e_case_clause e_case_clauses
     body
     fn_call.
 
@@ -35,6 +36,8 @@ Terminals
     hash
     when
     else
+    match
+    end
     nl.
 
 Rootsymbol
@@ -48,10 +51,11 @@ tl_exprs -> tl_expr nl: ['$1'].
 tl_exprs -> tl_expr nl tl_exprs : ['$1'|'$3'].
 
 tl_expr -> e_when : '$1'.
-tl_expr -> match : '$1'.
+tl_expr -> e_case : '$1'.
+tl_expr -> e_match : '$1'.
 
-match -> bool_or_op assign bool_or_op : {match, line('$1'), '$1', '$3'}.
-match -> bool_or_op : '$1'.
+e_match -> bool_or_op assign bool_or_op : {match, line('$1'), '$1', '$3'}.
+e_match -> bool_or_op : '$1'.
 
 bool_or_op -> bool_and_op bool_or bool_or_op :
     {op, line('$2'), to_erl_op(unwrap('$2')), '$1', '$3'}.
@@ -139,6 +143,14 @@ e_when_clause -> when bool_or_op body :
 
 e_when_elses -> else e_when_clause : ['$2'].
 e_when_elses -> else e_when_clause e_when_elses : ['$2'|'$3'].
+
+e_case -> match bool_or_op colon e_case_clauses end :
+    {'case', line('$1'), '$2', '$4'}.
+
+e_case_clause -> literal body : {clause, line('$1'), ['$1'], [], '$2'}.
+
+e_case_clauses -> e_case_clause : ['$1'].
+e_case_clauses -> e_case_clause e_case_clauses : ['$1'|'$2'].
 
 body -> open_map tl_exprs close_map : '$2'.
 
