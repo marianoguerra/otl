@@ -31,6 +31,7 @@ OpenList    = \[
 CloseList   = \]
 
 ConsOp      = ::
+Sep         = ,
 
 Rules.
 
@@ -60,6 +61,7 @@ Rules.
 {CloseList}              : make_token(close_list,  TokenLine, TokenChars).
 
 {ConsOp}                 : make_token(cons_op, TokenLine, TokenChars).
+{Sep}                    : make_token(sep,     TokenLine, TokenChars).
 
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).

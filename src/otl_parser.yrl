@@ -8,7 +8,8 @@ Nonterminals
     bool_and_op
     match
     literal
-    list cons_list.
+    list cons_list
+    list_items.
 
 Terminals
     add_op mul_op
@@ -21,6 +22,7 @@ Terminals
     open close
     open_list close_list
     cons_op
+    sep
     nl.
 
 Rootsymbol
@@ -69,7 +71,10 @@ literal -> list : '$1'.
 literal -> cons_list : '$1'.
 
 list -> open_list close_list : {nil, line('$1')}.
-list -> open_list literal close_list : {cons, line('$1'), '$2', {nil, line('$3')}}.
+list -> open_list list_items close_list : '$2'.
+
+list_items -> literal : {cons, line('$1'), '$1', {nil, line('$1')}}.
+list_items -> literal sep list_items : {cons, line('$1'), '$1', '$3'}.
 
 cons_list -> open_list literal cons_op literal close_list :
     {cons, line('$1'), '$2', '$4'}.
