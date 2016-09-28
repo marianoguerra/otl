@@ -30,6 +30,8 @@ Close       = \)
 OpenList    = \[
 CloseList   = \]
 
+ConsOp      = ::
+
 Rules.
 
 {Bool} : make_token(boolean, TokenLine, TokenChars).
@@ -56,6 +58,8 @@ Rules.
 
 {OpenList}               : make_token(open_list,   TokenLine, TokenChars).
 {CloseList}              : make_token(close_list,  TokenLine, TokenChars).
+
+{ConsOp}                 : make_token(cons_op, TokenLine, TokenChars).
 
 % spaces, tabs and new lines
 {Endls}+                 : make_token(nl, TokenLine, endls(TokenChars)).
