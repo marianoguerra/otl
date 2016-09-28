@@ -90,6 +90,7 @@ list_items -> literal sep list_items : {cons, line('$1'), '$1', '$3'}.
 list_items -> literal cons_op literal : {cons, line('$1'), '$1', '$3'}.
 
 tuple -> open close : {tuple, line('$1'), []}.
+tuple -> open literal sep close : {tuple, line('$1'), ['$2']}.
 
 Erlang code.
 
