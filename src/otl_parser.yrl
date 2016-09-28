@@ -10,7 +10,8 @@ Nonterminals
     match
     literal
     list tuple
-    list_items seq_items.
+    list_items seq_items
+    fn_call.
 
 Terminals
     add_op mul_op
@@ -80,6 +81,7 @@ literal -> atom : '$1'.
 literal -> open bool_or_op close : '$2'.
 literal -> list : '$1'.
 literal -> tuple : '$1'.
+literal -> fn_call : '$1'.
 
 list -> open_list close_list : {nil, line('$1')}.
 list -> open_list list_items close_list : '$2'.
@@ -96,6 +98,9 @@ tuple -> open literal sep seq_items close : {tuple, line('$1'), ['$2'|'$4']}.
 seq_items -> literal : ['$1'].
 seq_items -> literal sep : ['$1'].
 seq_items -> literal sep seq_items : ['$1'|'$3'].
+
+fn_call -> atom open literal close : {call, line('$1'), '$1', ['$3']}.
+fn_call -> atom tuple : {call, line('$1'), '$1', unwrap('$2')}.
 
 Erlang code.
 
