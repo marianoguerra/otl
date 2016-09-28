@@ -154,4 +154,5 @@ atom_or_identifier(String, TokenLine) ->
 build_atom(Atom, _Line) -> list_to_atom(Atom).
 
 is_reserved("when")    -> true;
+is_reserved("else")    -> true;
 is_reserved(_)         -> false.

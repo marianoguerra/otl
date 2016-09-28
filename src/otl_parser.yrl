@@ -12,7 +12,7 @@ Nonterminals
     list tuple map
     list_items seq_items map_item map_items
     map_update
-    e_when
+    e_when e_when_clause e_when_elses
     body
     fn_call.
 
@@ -34,6 +34,7 @@ Terminals
     colon
     hash
     when
+    else
     nl.
 
 Rootsymbol
@@ -130,9 +131,14 @@ fn_call -> atom dot atom open literal close :
 fn_call -> atom dot atom tuple :
     {call, line('$1'), {remote, line('$1'), '$1', '$3'}, unwrap('$4')}.
 
-e_when -> when bool_or_op body :
-    Line = line('$1'),
-    {'if', Line, [{clause, Line, [], [['$2']], '$3'}]}.
+e_when -> e_when_clause : {'if', line('$1'), ['$1']}.
+e_when -> e_when_clause e_when_elses : {'if', line('$1'), ['$1'|'$2']}.
+
+e_when_clause -> when bool_or_op body :
+    {clause, line('$1'), [], [['$2']], '$3'}.
+
+e_when_elses -> else e_when_clause : ['$2'].
+e_when_elses -> else e_when_clause e_when_elses : ['$2'|'$3'].
 
 body -> open_map tl_exprs close_map : '$2'.
 
