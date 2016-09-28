@@ -30,6 +30,9 @@ Close       = \)
 OpenList    = \[
 CloseList   = \]
 
+OpenMap     = \{
+CloseMap    = \}
+
 ConsOp      = ::
 Sep         = ,
 Dot         = \.
@@ -65,6 +68,9 @@ Rules.
 
 {OpenList}               : make_token(open_list,   TokenLine, TokenChars).
 {CloseList}              : make_token(close_list,  TokenLine, TokenChars).
+
+{OpenMap}                : make_token(open_map,    TokenLine, TokenChars).
+{CloseMap}               : make_token(close_map ,  TokenLine, TokenChars).
 
 {ConsOp}                 : make_token(cons_op, TokenLine, TokenChars).
 {Sep}                    : make_token(sep,     TokenLine, TokenChars).

@@ -9,7 +9,7 @@ Nonterminals
     bool_and_op
     match
     literal
-    list tuple
+    list tuple map
     list_items seq_items
     fn_call.
 
@@ -23,6 +23,7 @@ Terminals
     atom
     open close
     open_list close_list
+    open_map close_map
     cons_op
     sep
     concat_op
@@ -82,10 +83,13 @@ literal -> atom : '$1'.
 literal -> open bool_or_op close : '$2'.
 literal -> list : '$1'.
 literal -> tuple : '$1'.
+literal -> map : '$1'.
 literal -> fn_call : '$1'.
 
 list -> open_list close_list : {nil, line('$1')}.
 list -> open_list list_items close_list : '$2'.
+
+map -> open_map close_map : {map, line('$1'), []}.
 
 list_items -> literal : {cons, line('$1'), '$1', {nil, line('$1')}}.
 list_items -> literal sep : {cons, line('$1'), '$1', {nil, line('$1')}}.
