@@ -98,6 +98,8 @@ fn normalize_tokens
     case [], Accum: lists.reverse(Accum)
     case [H=(colon, _, _), (nl, _, _) :: T], Accum:
         normalize_tokens([H :: T], Accum)
+    case [H=(close_map, _, _), (nl, _, _) :: T], Accum:
+        normalize_tokens([H :: T], Accum)
 
     case [(nl, _, _), H=(`end`, _) :: T], Accum:
         normalize_tokens([H :: T], Accum)
