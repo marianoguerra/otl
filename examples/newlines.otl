@@ -1,13 +1,32 @@
-match 42:
-    1 {
-        one
-        two
+fn fun1:
+    (Arg) {
+        match 42:
+            1 {
+                A = 1
+                B = 2
+                A + B
+            }
+            2 {
+                [two,
+                 three]
+            }
+            42 {
+                the_answer
+            }
+        end
     }
-    2 {
-        [two,
-         three]
-    }
-    42 {
-        the_answer
+end
+
+fn fun2:
+    (N, 42) {
+        N = 5
+
+        when N is 1 {
+            one
+        } else when N is 2 {
+            two
+        } else when true {
+            N
+        }
     }
 end

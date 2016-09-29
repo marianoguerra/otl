@@ -52,16 +52,16 @@ fn to_ast @public case Path:
     with_file_content(Path, fn str_to_ast:1)
 end
 
-fn to_mod @public case Path, ModuleName, FunctionName:
+fn to_mod @public case Path, ModuleName:
     match to_ast(Path):
         case ok, Ast:
-            ast_to_mod(Ast, Path, ModuleName, FunctionName)
+            ast_to_mod(Ast, Path, ModuleName)
         case Other: Other
     end
 end
 
-fn to_beam @public case Path, OutDir, ModuleName, FunctionName:
-    match to_mod(Path, ModuleName, FunctionName):
+fn to_beam @public case Path, OutDir, ModuleName:
+    match to_mod(Path, ModuleName):
         case ok, ModAst:
             Opts = []
             (ok, ModuleNameAtom, Code, _Warnings) = ast_to_beam(ModAst, Opts)
@@ -76,13 +76,19 @@ fn eval_path @public case Path:
     erl_eval.exprs(Ast, Bindings)
 end
 
-fn ast_to_mod case Ast, Path, ModuleName, FunctionName:
-    FName = list_to_atom(FunctionName)
+fn ast_to_mod case Ast, Path, ModuleName:
+    Exports = export_all(Ast, [])
     Mod = [(attribute, 1, file, (Path, 1)),
         (attribute, 1, module, list_to_atom(ModuleName)),
-        (attribute, 2, export, [(FName, 0)]),
-        (function, 3, FName, 0, [(clause, 4, [], [], Ast)])]
+        (attribute, 2, export, Exports)] ++ Ast
     (ok, Mod)
+end
+
+fn export_all
+    case [], Accum: lists.reverse(Accum)
+    case [(function, _, Name, Arity, _) :: T], Accum:
+        export_all(T, [(Name, Arity) :: Accum])
+    case [_ :: T], Accum: export_all(T, Accum)
 end
 
 fn str_to_lex @public case String:
@@ -159,12 +165,12 @@ fn main @public
         print(to_lex(Path))
     case ["ast", Path]:
         print(to_ast(Path))
-    case ["mod", Path, ModuleName, FunctionName]:
-        print(to_mod(Path, ModuleName, FunctionName))
-    case ["beam", Path, OutDirPath, ModuleName, FunctionName]:
-        print(to_beam(Path, OutDirPath, ModuleName, FunctionName))
-    case ["erl", Path, ModuleName, FunctionName]:
-        print(ast_to_erl(to_mod(Path, ModuleName, FunctionName)))
+    case ["mod", Path, ModuleName]:
+        print(to_mod(Path, ModuleName))
+    case ["beam", Path, OutDirPath, ModuleName]:
+        print(to_beam(Path, OutDirPath, ModuleName))
+    case ["erl", Path, ModuleName]:
+        print(ast_to_erl(to_mod(Path, ModuleName)))
     case ["eval", Path]:
         (value, Value, _Bindings) = eval_path(Path)
         print(Value)

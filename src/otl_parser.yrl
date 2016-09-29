@@ -14,7 +14,9 @@ Nonterminals
     map_update
     e_when e_when_clause e_when_elses
     e_case e_case_clause e_case_clauses
+    e_fn e_fn_clause
     body
+    mod_exprs mod_expr
     fn_call.
 
 Terminals
@@ -37,14 +39,30 @@ Terminals
     when
     else
     match
+    fn
     end
     nl.
 
 Rootsymbol
     program.
 
-program -> nl tl_exprs : '$2'.
-program -> tl_exprs : '$1'.
+program -> nl mod_exprs : '$2'.
+program -> mod_exprs : '$1'.
+
+mod_exprs -> mod_expr : ['$1'].
+mod_exprs -> mod_expr nl : ['$1'].
+mod_exprs -> mod_expr nl mod_exprs : ['$1'|'$3'].
+
+mod_expr -> e_fn : '$1'.
+
+e_fn -> fn atom colon e_fn_clause end :
+    Clause = '$4',
+    {_, _, Args, _, _} = Clause,
+    Arity = length(Args),
+    {function, line('$1'), unwrap('$2'), Arity, [Clause]}.
+
+e_fn_clause -> tuple body : {clause, line('$1'), unwrap('$1'), [], '$2'}.
+e_fn_clause -> open literal close body : {clause, line('$1'), ['$2'], [], '$4'}.
 
 tl_exprs -> tl_expr : ['$1'].
 tl_exprs -> tl_expr nl: ['$1'].

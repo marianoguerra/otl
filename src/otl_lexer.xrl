@@ -153,6 +153,7 @@ atom_or_identifier(String, TokenLine) ->
 
 build_atom(Atom, _Line) -> list_to_atom(Atom).
 
+is_reserved("fn")    -> true;
 is_reserved("when")    -> true;
 is_reserved("else")    -> true;
 is_reserved("match")    -> true;
