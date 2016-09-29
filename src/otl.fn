@@ -99,6 +99,9 @@ fn normalize_tokens
     case [H=(colon, _, _), (nl, _, _) :: T], Accum:
         normalize_tokens([H :: T], Accum)
 
+    case [(nl, _, _), H=(`end`, _) :: T], Accum:
+        normalize_tokens([H :: T], Accum)
+
     case [H :: T], Accum: normalize_tokens(T, [H :: Accum])
 end
 
