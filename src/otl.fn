@@ -87,11 +87,19 @@ end
 
 fn str_to_lex @public case String:
     match otl_lexer.string(String):
-        case ok, Tokens, Endline: (ok, Tokens, Endline)
+        case ok, Tokens, Endline: (ok, normalize_tokens(Tokens, []), Endline)
         case eof, Endline: (error, (Endline, otl_lexer, (eof, Endline)))
         case error, Error: (error, Error)
         case error, Error, _: (error, Error)
     end
+end
+
+fn normalize_tokens
+    case [], Accum: lists.reverse(Accum)
+    case [H=(colon, _, _), (nl, _, _) :: T], Accum:
+        normalize_tokens([H :: T], Accum)
+
+    case [H :: T], Accum: normalize_tokens(T, [H :: Accum])
 end
 
 fn str_to_ast @public case Str:

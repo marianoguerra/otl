@@ -1,0 +1,2 @@
+match 42:
+    1 { one } 2 { two } 42 { the_answer } end
