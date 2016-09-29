@@ -1,8 +1,13 @@
 match 42:
     1 {
-        one }
+        one
+        two
+    }
     2 {
-        two }
+        [two,
+         three]
+    }
     42 {
-        the_answer }
+        the_answer
+    }
 end
