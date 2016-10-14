@@ -19,6 +19,7 @@ Nonterminals
     body
     mod_exprs mod_expr
     e_try catch_clauses catch_clause
+    e_begin
     fn_call fn_ref.
 
 Terminals
@@ -43,6 +44,7 @@ Terminals
     fn
     end
     try catch after
+    do
     nl.
 
 Rootsymbol
@@ -81,6 +83,7 @@ tl_exprs -> tl_expr nl tl_exprs : ['$1'|'$3'].
 tl_expr -> e_when : '$1'.
 tl_expr -> e_case : '$1'.
 tl_expr -> e_try : '$1'.
+tl_expr -> e_begin : '$1'.
 tl_expr -> e_match : '$1'.
 
 e_match -> bool_or_op assign bool_or_op : {match, line('$1'), '$1', '$3'}.
@@ -215,6 +218,7 @@ catch_clause -> atom sep literal body :
     Line = line('$1'),
     {clause, Line, [{tuple, Line, ['$1', '$3', {var, Line, '_'}]}], [], '$4'}.
 
+e_begin -> do colon tl_exprs end : {block, line('$1'), '$3'}.
 
 body -> open_map tl_exprs close_map : '$2'.
 

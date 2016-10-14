@@ -84,5 +84,10 @@ fn fun2:
             A = N + 2
             A * 3
         end
+
+        do:
+            A = N + 2
+            A * 3
+        end
     }
 end
