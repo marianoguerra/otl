@@ -33,6 +33,11 @@ fn fun2:
             }
         end
 
+        F = fn:
+            (0) { zero }
+            (A) { A + 1 }
+        end
+
         Ref = fn.erlang.now(0)
         Ref
     }

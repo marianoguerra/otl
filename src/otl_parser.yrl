@@ -15,6 +15,7 @@ Nonterminals
     e_when e_when_clause e_when_clauses
     e_case e_case_clause e_case_clauses
     e_fn e_fn_clause e_fn_clauses
+    fn_lambda
     body
     mod_exprs mod_expr
     fn_call fn_ref.
@@ -120,6 +121,7 @@ literal -> map : '$1'.
 literal -> map_update : '$1'.
 literal -> fn_call : '$1'.
 literal -> fn_ref : '$1'.
+literal -> fn_lambda : '$1'.
 
 list -> open_list close_list : {nil, line('$1')}.
 list -> open_list list_items close_list : '$2'.
@@ -159,6 +161,8 @@ fn_call -> atom dot atom tuple :
 
 fn_ref -> fn dot atom dot atom open integer close :
     {'fun', line('$1'), {function, '$3', '$5', '$7'}}.
+
+fn_lambda -> fn colon e_fn_clauses end : {'fun', line('$1'), {clauses, '$3'}}.
 
 e_when -> when e_when_clauses end : {'if', line('$1'), '$2'}.
 
