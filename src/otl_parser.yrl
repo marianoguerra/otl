@@ -180,6 +180,8 @@ e_case -> match bool_or_op colon e_case_clauses end :
     {'case', line('$1'), '$2', '$4'}.
 
 e_case_clause -> literal body : {clause, line('$1'), ['$1'], [], '$2'}.
+e_case_clause -> literal when bool_or_op body :
+    {clause, line('$1'), ['$1'], ['$3'], '$4'}.
 
 e_case_clauses -> e_case_clause : ['$1'].
 e_case_clauses -> e_case_clause e_case_clauses : ['$1'|'$2'].

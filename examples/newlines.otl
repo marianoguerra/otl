@@ -1,7 +1,7 @@
 fn fun1:
     (Arg) {
         match 42:
-            1 {
+            A when A > 50 {
                 A = 1
                 B = 2
                 A + B
