@@ -89,5 +89,15 @@ fn fun2:
             A = N + 2
             A * 3
         end
+
+        receive:
+            42 {
+               A = 43 
+               A * 2
+            }
+            A when A > 10 {
+                ok
+            }
+        end
     }
 end
