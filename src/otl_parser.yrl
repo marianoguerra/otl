@@ -18,6 +18,7 @@ Nonterminals
     fn_lambda
     body
     mod_exprs mod_expr
+    e_try
     fn_call fn_ref.
 
 Terminals
@@ -41,6 +42,7 @@ Terminals
     match
     fn
     end
+    try after
     nl.
 
 Rootsymbol
@@ -78,6 +80,7 @@ tl_exprs -> tl_expr nl tl_exprs : ['$1'|'$3'].
 
 tl_expr -> e_when : '$1'.
 tl_expr -> e_case : '$1'.
+tl_expr -> e_try : '$1'.
 tl_expr -> e_match : '$1'.
 
 e_match -> bool_or_op assign bool_or_op : {match, line('$1'), '$1', '$3'}.
@@ -191,6 +194,9 @@ e_case_clause -> literal when bool_or_op body :
 
 e_case_clauses -> e_case_clause : ['$1'].
 e_case_clauses -> e_case_clause e_case_clauses : ['$1'|'$2'].
+
+e_try -> try colon tl_exprs after colon tl_exprs end :
+    {'try', line('$1'), '$3', [], [], '$6'}.
 
 body -> open_map tl_exprs close_map : '$2'.
 

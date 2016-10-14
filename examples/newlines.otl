@@ -50,6 +50,12 @@ fn fun2:
         Ref1
     }
     (N, _) {
-        io.format("alternative ~p~n", [N])
+        try:
+            A = N + 1
+            io.format("alternative ~p~n", [N])
+        after:
+            A = N + 2
+            A * 3
+        end
     }
 end
