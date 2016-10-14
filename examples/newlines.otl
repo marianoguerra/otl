@@ -29,4 +29,7 @@ fn fun2:
             N
         }
     }
+    (N, _) {
+        io.format("alternative ~p~n", [N])
+    }
 end

@@ -14,7 +14,7 @@ Nonterminals
     map_update
     e_when e_when_clause e_when_elses
     e_case e_case_clause e_case_clauses
-    e_fn e_fn_clause
+    e_fn e_fn_clause e_fn_clauses
     body
     mod_exprs mod_expr
     fn_call.
@@ -55,11 +55,15 @@ mod_exprs -> mod_expr nl mod_exprs : ['$1'|'$3'].
 
 mod_expr -> e_fn : '$1'.
 
-e_fn -> fn atom colon e_fn_clause end :
-    Clause = '$4',
+e_fn -> fn atom colon e_fn_clauses end :
+    Clauses = '$4',
+    [Clause|_] = Clauses,
     {_, _, Args, _, _} = Clause,
     Arity = length(Args),
-    {function, line('$1'), unwrap('$2'), Arity, [Clause]}.
+    {function, line('$1'), unwrap('$2'), Arity, Clauses}.
+
+e_fn_clauses -> e_fn_clause : ['$1'].
+e_fn_clauses -> e_fn_clause e_fn_clauses : ['$1'|'$2'].
 
 e_fn_clause -> tuple body : {clause, line('$1'), unwrap('$1'), [], '$2'}.
 e_fn_clause -> open literal close body : {clause, line('$1'), ['$2'], [], '$4'}.
