@@ -163,7 +163,13 @@ fn_call -> atom dot atom open literal close :
 fn_call -> atom dot atom tuple :
     {call, line('$1'), {remote, line('$1'), '$1', '$3'}, unwrap('$4')}.
 
-fn_ref -> fn dot atom dot atom open integer close :
+fn_ref -> fn dot atom dot atom open literal close :
+    {'fun', line('$1'), {function, '$3', '$5', '$7'}}.
+fn_ref -> fn dot atom dot var open literal close :
+    {'fun', line('$1'), {function, '$3', '$5', '$7'}}.
+fn_ref -> fn dot var dot var open literal close :
+    {'fun', line('$1'), {function, '$3', '$5', '$7'}}.
+fn_ref -> fn dot var dot atom open literal close :
     {'fun', line('$1'), {function, '$3', '$5', '$7'}}.
 
 fn_lambda -> fn colon e_fn_clauses end : {'fun', line('$1'), {clauses, '$3'}}.

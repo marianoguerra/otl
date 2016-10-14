@@ -33,13 +33,21 @@ fn fun2:
             }
         end
 
-        F = fn:
+        Fn = fn:
             (0) { zero }
             (A) { A + 1 }
         end
 
-        Ref = fn.erlang.now(0)
-        Ref
+        M = erlang
+        F = now
+        A = 0
+
+        Ref1 = fn.erlang.now(0)
+        Ref2 = fn.erlang.F(A)
+        Ref3 = fn.M.now(0)
+        Ref4 = fn.M.F(A)
+
+        Ref1
     }
     (N, _) {
         io.format("alternative ~p~n", [N])
