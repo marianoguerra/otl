@@ -52,22 +52,28 @@ fn to_ast @public case Path:
     with_file_content(Path, fn str_to_ast:1)
 end
 
-fn to_mod @public case Path, ModuleName:
+fn to_mod @public case Path:
     match to_ast(Path):
         case ok, Ast:
+            ModuleName = module_name_from_path(Path)
             ast_to_mod(Ast, Path, ModuleName)
         case Other: Other
     end
 end
 
-fn to_beam @public case Path, OutDir, ModuleName:
-    match to_mod(Path, ModuleName):
+fn to_beam @public case Path, OutDir:
+    match to_mod(Path):
         case ok, ModAst:
             Opts = []
             (ok, ModuleNameAtom, Code, _Warnings) = ast_to_beam(ModAst, Opts)
             beam_to_file(Code, OutDir, ModuleNameAtom)
         case Other: Other
     end
+end
+
+fn module_name_from_path case Path:
+    BaseName = filename.basename(Path)
+    filename.rootname(BaseName)
 end
 
 fn eval_path @public case Path:
@@ -165,12 +171,12 @@ fn main @public
         print(to_lex(Path))
     case ["ast", Path]:
         print(to_ast(Path))
-    case ["mod", Path, ModuleName]:
-        print(to_mod(Path, ModuleName))
-    case ["beam", Path, OutDirPath, ModuleName]:
-        print(to_beam(Path, OutDirPath, ModuleName))
-    case ["erl", Path, ModuleName]:
-        print(ast_to_erl(to_mod(Path, ModuleName)))
+    case ["mod", Path]:
+        print(to_mod(Path))
+    case ["beam", Path, OutDirPath]:
+        print(to_beam(Path, OutDirPath))
+    case ["erl", Path]:
+        print(ast_to_erl(to_mod(Path)))
     case ["eval", Path]:
         (value, Value, _Bindings) = eval_path(Path)
         print(Value)
