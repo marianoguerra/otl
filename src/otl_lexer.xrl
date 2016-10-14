@@ -35,6 +35,7 @@ CloseMap    = \}
 
 ConsOp      = ::
 Sep         = ,
+SColon      = ;
 Dot         = \.
 Colon       = :
 Hash        = #
@@ -76,6 +77,7 @@ Rules.
 
 {ConsOp}                 : make_token(cons_op, TokenLine, TokenChars).
 {Sep}                    : make_token(sep,     TokenLine, TokenChars).
+{SColon}                 : make_token(scolon,     TokenLine, TokenChars).
 {Dot}                    : make_token(dot,     TokenLine, TokenChars).
 {Colon}                  : make_token(colon,   TokenLine, TokenChars).
 {Hash}                   : make_token(hash,    TokenLine, TokenChars).

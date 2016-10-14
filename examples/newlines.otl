@@ -108,6 +108,15 @@ fn fun2:
             A when A > 10 {
                 ok
             }
+            B when B == 100; B == 50 {
+                dontknow
+            }
+            B when B == 10; B == 5, B < 3 {
+                dontknow
+            }
+            B when B > 50, B == 10; B == 5, B < 3 {
+                dontknow
+            }
         after 10:
             io.format("late~n")
             late

@@ -21,6 +21,7 @@ Nonterminals
     e_try catch_clauses catch_clause
     e_begin
     e_receive
+    guard_seq guard
     fn_call fn_ref.
 
 Terminals
@@ -36,6 +37,7 @@ Terminals
     open_map close_map
     cons_op
     sep
+    scolon
     concat_op
     dot
     colon
@@ -72,11 +74,11 @@ e_fn_clauses -> e_fn_clause : ['$1'].
 e_fn_clauses -> e_fn_clause e_fn_clauses : ['$1'|'$2'].
 
 e_fn_clause -> tuple body : {clause, line('$1'), unwrap('$1'), [], '$2'}.
-e_fn_clause -> tuple when bool_or_op body :
-    {clause, line('$1'), unwrap('$1'), ['$3'], '$4'}.
+e_fn_clause -> tuple when guard_seq body :
+    {clause, line('$1'), unwrap('$1'), '$3', '$4'}.
 e_fn_clause -> open literal close body : {clause, line('$1'), ['$2'], [], '$4'}.
-e_fn_clause -> open literal close when bool_or_op body :
-    {clause, line('$1'), ['$2'], ['$5'], '$6'}.
+e_fn_clause -> open literal close when guard_seq body :
+    {clause, line('$1'), ['$2'], '$5', '$6'}.
 
 tl_exprs -> tl_expr : ['$1'].
 tl_exprs -> tl_expr nl: ['$1'].
@@ -185,18 +187,24 @@ fn_lambda -> fn colon e_fn_clauses end : {'fun', line('$1'), {clauses, '$3'}}.
 
 e_when -> when e_when_clauses end : {'if', line('$1'), '$2'}.
 
-e_when_clause -> bool_or_op body :
-    {clause, line('$1'), [], [['$1']], '$2'}.
+e_when_clause -> guard_seq body :
+    {clause, line('$1'), [], '$1', '$2'}.
 
 e_when_clauses -> e_when_clause : ['$1'].
 e_when_clauses -> e_when_clause e_when_clauses : ['$1'|'$2'].
+
+guard_seq -> guard : ['$1'].
+guard_seq -> guard scolon guard_seq : ['$1'|'$3'].
+
+guard -> bool_or_op : ['$1'].
+guard -> bool_or_op sep guard : ['$1'|'$3'].
 
 e_case -> match bool_or_op colon e_case_clauses end :
     {'case', line('$1'), '$2', '$4'}.
 
 e_case_clause -> literal body : {clause, line('$1'), ['$1'], [], '$2'}.
-e_case_clause -> literal when bool_or_op body :
-    {clause, line('$1'), ['$1'], ['$3'], '$4'}.
+e_case_clause -> literal when guard_seq body :
+    {clause, line('$1'), ['$1'], '$3', '$4'}.
 
 e_case_clauses -> e_case_clause : ['$1'].
 e_case_clauses -> e_case_clause e_case_clauses : ['$1'|'$2'].
@@ -235,7 +243,7 @@ unwrap({_,V})   -> V;
 unwrap({_,_,V}) -> V.
 
 line(T) when is_tuple(T) -> element(2, T);
-line([H|_T]) -> element(2, H).
+line([H|_T]) -> line(H).
 
 to_erl_op('+') -> '+';
 to_erl_op('-') -> '-';
