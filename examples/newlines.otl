@@ -53,6 +53,26 @@ fn fun2:
         try:
             A = N + 1
             io.format("alternative ~p~n", [N])
+        after:
+            A = N + 2
+            A * 3
+        end
+
+        try:
+            A = N + 1
+            io.format("alternative ~p~n", [N])
+        catch:
+            badarg {
+                ok
+            }
+            error, foo {
+                foo
+            }
+        end
+
+        try:
+            A = N + 1
+            io.format("alternative ~p~n", [N])
         catch:
             badarg {
                 ok

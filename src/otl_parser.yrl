@@ -199,6 +199,8 @@ e_try -> try colon tl_exprs after colon tl_exprs end :
     {'try', line('$1'), '$3', [], [], '$6'}.
 e_try -> try colon tl_exprs catch colon catch_clauses after colon tl_exprs end :
     {'try', line('$1'), '$3', [], '$6', '$9'}.
+e_try -> try colon tl_exprs catch colon catch_clauses end :
+    {'try', line('$1'), '$3', [], '$6', []}.
 
 catch_clauses -> catch_clause : ['$1'].
 catch_clauses -> catch_clause catch_clauses : ['$1'|'$2'].
