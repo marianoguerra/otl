@@ -18,7 +18,7 @@ Nonterminals
     fn_lambda
     body
     mod_exprs mod_expr
-    e_try
+    e_try catch_clauses catch_clause
     fn_call fn_ref.
 
 Terminals
@@ -42,7 +42,7 @@ Terminals
     match
     fn
     end
-    try after
+    try catch after
     nl.
 
 Rootsymbol
@@ -197,6 +197,22 @@ e_case_clauses -> e_case_clause e_case_clauses : ['$1'|'$2'].
 
 e_try -> try colon tl_exprs after colon tl_exprs end :
     {'try', line('$1'), '$3', [], [], '$6'}.
+e_try -> try colon tl_exprs catch colon catch_clauses after colon tl_exprs end :
+    {'try', line('$1'), '$3', [], '$6', '$9'}.
+
+catch_clauses -> catch_clause : ['$1'].
+catch_clauses -> catch_clause catch_clauses : ['$1'|'$2'].
+
+catch_clause -> literal body :
+    Line = line('$1'),
+    {clause, Line, [{tuple, Line,
+                        [{atom, Line, throw}, '$1', {var, Line, '_'}]}],
+                        [], '$2'}.
+
+catch_clause -> atom sep literal body :
+    Line = line('$1'),
+    {clause, Line, [{tuple, Line, ['$1', '$3', {var, Line, '_'}]}], [], '$4'}.
+
 
 body -> open_map tl_exprs close_map : '$2'.
 
