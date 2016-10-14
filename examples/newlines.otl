@@ -18,7 +18,7 @@ fn fun1:
 end
 
 fn fun2:
-    (N, 42) {
+    (N, 42) when N > 2 {
         N = 5
 
         when

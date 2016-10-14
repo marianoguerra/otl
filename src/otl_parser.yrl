@@ -66,7 +66,11 @@ e_fn_clauses -> e_fn_clause : ['$1'].
 e_fn_clauses -> e_fn_clause e_fn_clauses : ['$1'|'$2'].
 
 e_fn_clause -> tuple body : {clause, line('$1'), unwrap('$1'), [], '$2'}.
+e_fn_clause -> tuple when bool_or_op body :
+    {clause, line('$1'), unwrap('$1'), ['$3'], '$4'}.
 e_fn_clause -> open literal close body : {clause, line('$1'), ['$2'], [], '$4'}.
+e_fn_clause -> open literal close when bool_or_op body :
+    {clause, line('$1'), ['$2'], ['$5'], '$6'}.
 
 tl_exprs -> tl_expr : ['$1'].
 tl_exprs -> tl_expr nl: ['$1'].
