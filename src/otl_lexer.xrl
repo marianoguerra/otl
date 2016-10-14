@@ -164,5 +164,7 @@ is_reserved("after")    -> true;
 is_reserved("match")    -> true;
 is_reserved("do")    -> true;
 is_reserved("receive")    -> true;
+is_reserved("for")    -> true;
+is_reserved("in")    -> true;
 is_reserved("end")    -> true;
 is_reserved(_)         -> false.

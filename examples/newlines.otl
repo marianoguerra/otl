@@ -1,7 +1,7 @@
 fn fun1:
     (Arg) {
         match 42:
-            A when A > 50 {
+            A when A > 50; A == 10, A != 5 {
                 A = 1
                 B = 2
                 A + B
@@ -120,6 +120,23 @@ fn fun2:
         after 10:
             io.format("late~n")
             late
+        end
+
+        for X in [1, 2, 3]:
+            X * 2
+        end
+
+        for X in [1, 2, 3]:
+            io.format("X: ~p~n", [X])
+            X * 2
+        end
+
+        for X in [1, 2, 3], X % 2 == 0:
+            X * 2
+        end
+
+        for X in [1, 2, 3], Y in [10, 20, 30], X % 2 == 0:
+            (X, Y)
         end
     }
 end

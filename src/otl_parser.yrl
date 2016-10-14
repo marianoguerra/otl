@@ -21,6 +21,7 @@ Nonterminals
     e_try catch_clauses catch_clause
     e_begin
     e_receive
+    e_lc qualifiers qualifier
     guard_seq guard
     fn_call fn_ref.
 
@@ -48,6 +49,7 @@ Terminals
     end
     try catch after
     do
+    for in
     receive
     nl.
 
@@ -89,6 +91,7 @@ tl_expr -> e_case : '$1'.
 tl_expr -> e_try : '$1'.
 tl_expr -> e_begin : '$1'.
 tl_expr -> e_receive : '$1'.
+tl_expr -> e_lc : '$1'.
 tl_expr -> e_match : '$1'.
 
 e_match -> bool_or_op assign bool_or_op : {match, line('$1'), '$1', '$3'}.
@@ -234,6 +237,19 @@ e_begin -> do colon tl_exprs end : {block, line('$1'), '$3'}.
 e_receive -> receive colon e_case_clauses end : {'receive', line('$1'), '$3'}.
 e_receive -> receive colon e_case_clauses after literal colon tl_exprs end :
     {'receive', line('$1'), '$3', '$5', '$7'}.
+
+e_lc -> for qualifiers colon tl_exprs end :
+    Exprs = '$4',
+    case Exprs of
+        [Expr] -> {lc, line('$1'), Expr, '$2'};
+        _ -> {lc, line('$1'), {block, line(Exprs), Exprs}, '$2'}
+    end.
+
+qualifiers -> qualifier : ['$1'].
+qualifiers -> qualifier sep qualifiers : ['$1'|'$3'].
+
+qualifier -> literal in literal : {generate, line('$1'), '$1', '$3'}.
+qualifier -> bool_or_op : '$1'.
 
 body -> open_map tl_exprs close_map : '$2'.
 
