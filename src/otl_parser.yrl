@@ -12,7 +12,7 @@ Nonterminals
     list tuple map
     list_items seq_items map_item map_items
     map_update
-    e_when e_when_clause e_when_elses
+    e_when e_when_clause e_when_clauses
     e_case e_case_clause e_case_clauses
     e_fn e_fn_clause e_fn_clauses
     body
@@ -37,7 +37,6 @@ Terminals
     colon
     hash
     when
-    else
     match
     fn
     end
@@ -161,14 +160,13 @@ fn_call -> atom dot atom tuple :
 fn_ref -> fn dot atom dot atom open integer close :
     {'fun', line('$1'), {function, '$3', '$5', '$7'}}.
 
-e_when -> e_when_clause : {'if', line('$1'), ['$1']}.
-e_when -> e_when_clause e_when_elses : {'if', line('$1'), ['$1'|'$2']}.
+e_when -> when e_when_clauses end : {'if', line('$1'), '$2'}.
 
-e_when_clause -> when bool_or_op body :
-    {clause, line('$1'), [], [['$2']], '$3'}.
+e_when_clause -> bool_or_op body :
+    {clause, line('$1'), [], [['$1']], '$2'}.
 
-e_when_elses -> else e_when_clause : ['$2'].
-e_when_elses -> else e_when_clause e_when_elses : ['$2'|'$3'].
+e_when_clauses -> e_when_clause : ['$1'].
+e_when_clauses -> e_when_clause e_when_clauses : ['$1'|'$2'].
 
 e_case -> match bool_or_op colon e_case_clauses end :
     {'case', line('$1'), '$2', '$4'}.

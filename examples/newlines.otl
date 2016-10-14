@@ -20,15 +20,21 @@ end
 fn fun2:
     (N, 42) {
         N = 5
-        Ref = fn.erlang.now(0)
 
-        when N is 1 {
-            one
-        } else when N is 2 {
-            two
-        } else when true {
-            N
-        }
+        when
+            N is 1 {
+                one
+            } 
+            N is 2 {
+                two
+            } 
+            true {
+                N
+            }
+        end
+
+        Ref = fn.erlang.now(0)
+        Ref
     }
     (N, _) {
         io.format("alternative ~p~n", [N])
