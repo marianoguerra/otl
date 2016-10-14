@@ -17,7 +17,7 @@ Nonterminals
     e_fn e_fn_clause e_fn_clauses
     body
     mod_exprs mod_expr
-    fn_call.
+    fn_call fn_ref.
 
 Terminals
     add_op mul_op
@@ -120,6 +120,7 @@ literal -> tuple : '$1'.
 literal -> map : '$1'.
 literal -> map_update : '$1'.
 literal -> fn_call : '$1'.
+literal -> fn_ref : '$1'.
 
 list -> open_list close_list : {nil, line('$1')}.
 list -> open_list list_items close_list : '$2'.
@@ -156,6 +157,9 @@ fn_call -> atom dot atom open literal close :
     {call, line('$1'), {remote, line('$1'), '$1', '$3'}, ['$5']}.
 fn_call -> atom dot atom tuple :
     {call, line('$1'), {remote, line('$1'), '$1', '$3'}, unwrap('$4')}.
+
+fn_ref -> fn dot atom dot atom open integer close :
+    {'fun', line('$1'), {function, '$3', '$5', '$7'}}.
 
 e_when -> e_when_clause : {'if', line('$1'), ['$1']}.
 e_when -> e_when_clause e_when_elses : {'if', line('$1'), ['$1'|'$2']}.

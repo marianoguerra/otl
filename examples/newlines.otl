@@ -20,6 +20,7 @@ end
 fn fun2:
     (N, 42) {
         N = 5
+        Ref = fn.erlang.now(0)
 
         when N is 1 {
             one
