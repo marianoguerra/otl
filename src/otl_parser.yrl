@@ -224,6 +224,8 @@ catch_clause -> atom sep literal body :
 e_begin -> do colon tl_exprs end : {block, line('$1'), '$3'}.
 
 e_receive -> receive colon e_case_clauses end : {'receive', line('$1'), '$3'}.
+e_receive -> receive colon e_case_clauses after literal colon tl_exprs end :
+    {'receive', line('$1'), '$3', '$5', '$7'}.
 
 body -> open_map tl_exprs close_map : '$2'.
 

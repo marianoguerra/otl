@@ -99,5 +99,18 @@ fn fun2:
                 ok
             }
         end
+
+        receive:
+            42 {
+               A = 43 
+               A * 2
+            }
+            A when A > 10 {
+                ok
+            }
+        after 10:
+            io.format("late~n")
+            late
+        end
     }
 end
